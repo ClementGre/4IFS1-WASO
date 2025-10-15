@@ -1,0 +1,8 @@
+services:
+  derby:
+    build: ./apache-derby
+    image: apache-derby
+    container_name: derby
+    network_mode: bridge
+    ports:
+      - "1540:1527"
