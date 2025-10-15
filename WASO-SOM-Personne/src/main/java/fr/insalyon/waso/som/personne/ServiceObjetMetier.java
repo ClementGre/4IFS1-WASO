@@ -72,6 +72,36 @@ public class ServiceObjetMetier {
         }
 
     }
+    public void rechercherPersonneParNom(String Nom) throws ServiceException {
+        try {
+            List<Object[]> listePersonne = this.dBConnection.launchQuery(
+                    "SELECT PersonneID, Nom, Prenom, Mail FROM PERSONNE WHERE LOWER(Nom) LIKE LOWER(?)",
+                    "%" + Nom + "%"
+
+            );
+
+            JsonArray jsonListe = new JsonArray();
+
+            for (Object[] row : listePersonne) {
+                JsonObject jsonItem = new JsonObject();
+
+                jsonItem.addProperty("id", (Integer) row[0]);
+                jsonItem.addProperty("nom", (String) row[1]);
+                jsonItem.addProperty("prenom", (String) row[2]);
+                jsonItem.addProperty("mail", (String) row[3]);
+
+                jsonListe.add(jsonItem);
+            }
+
+            this.container.add("personnes", jsonListe);
+
+
+
+        } catch (DBException ex) {
+            throw JsonServletHelper.ServiceObjectMetierExecutionException("Personne", "rechercherPersonneParNom", ex);
+        }
+
+    }
 
 
 

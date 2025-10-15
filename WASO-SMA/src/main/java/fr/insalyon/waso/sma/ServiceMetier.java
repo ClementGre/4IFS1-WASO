@@ -8,7 +8,9 @@ import fr.insalyon.waso.util.JsonServletHelper;
 import fr.insalyon.waso.util.exception.ServiceException;
 import fr.insalyon.waso.util.exception.ServiceIOException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  *
@@ -193,6 +195,87 @@ public class ServiceMetier {
 
         } catch (Exception ex) {
             throw JsonServletHelper.ServiceMetierExecutionException("getListeClient", ex);
+        }
+    }
+
+    public void rechercherClientParNomDePersonne(String nom, String ville) throws ServiceException {
+        try {
+
+            // 1. Récupérer les personnes par nom
+            JsonObject personneContainer = null;
+            try {
+                personneContainer = this.jsonHttpClient.post(
+                        this.somPersonneUrl,
+                        new JsonHttpClient.Parameter("SOM", "rechercherPersonneParNom"),
+                        new JsonHttpClient.Parameter("nom", nom)
+                );
+            } catch (ServiceIOException ex) {
+                throw JsonServletHelper.ServiceObjectMetierCallException(this.somPersonneUrl, "Personne", "rechercherPersonneParNom", ex);
+            }
+            System.out.println("1");
+            JsonArray personnesTrouvees = personneContainer.getAsJsonArray("personnes");
+
+            // 2. Récupérer tous les IDs des personnes
+            List<Integer> personnesID = new ArrayList<Integer>();
+            for (JsonElement p : personnesTrouvees) {
+                JsonObject personne = p.getAsJsonObject();
+                personnesID.add(personne.get("id").getAsInt());
+            }
+
+            System.out.println("2");
+
+            // 3 récupérer les clients associés à ces IDs (de personnes)
+
+            JsonObject clientContainer = null;
+            try {
+                clientContainer = this.jsonHttpClient.post(
+                        this.somClientUrl,
+                        new JsonHttpClient.Parameter("SOM", "rechercherClientParPersonne"),
+                        new JsonHttpClient.Parameter("personne-ids", personnesID.toString().replaceAll("[\\[\\] ]", "")),
+                        new JsonHttpClient.Parameter("ville", ville)
+                );
+            } catch (ServiceIOException ex) {
+                throw JsonServletHelper.ServiceObjectMetierCallException(this.somClientUrl, "Client", "rechercherClientParPersonne", ex);
+            }
+
+            System.out.println("3");
+
+            // 4. Récupérer toutes les personnes associées aux clients
+            JsonArray clientsTrouves = clientContainer.getAsJsonArray("clients");
+            for (JsonElement clientJsonElement : clientsTrouves.getAsJsonArray()) {
+
+                JsonObject client = clientJsonElement.getAsJsonObject();
+
+                JsonArray personnesIDClient = client.get("personnes-ID").getAsJsonArray();
+
+                JsonArray outputPersonnes = new JsonArray();
+
+                for (JsonElement personneID : personnesIDClient) {
+                    // pour chaque personneID, on récupère la personne associée avec le SOM Personne::getPersonneById
+                    int pid = personneID.getAsInt();
+                    JsonObject personneContainerById = null;
+                    try {
+                        personneContainerById = this.jsonHttpClient.post(
+                                this.somPersonneUrl,
+                                new JsonHttpClient.Parameter("SOM", "getPersonneById"),
+                                new JsonHttpClient.Parameter("PersonneID", Integer.toString(pid))
+                        );
+                    } catch (ServiceIOException ex) {
+                        throw JsonServletHelper.ServiceObjectMetierCallException(this.somPersonneUrl, "Personne", "getPersonneById", ex);
+                    }
+                    JsonObject personne = personneContainerById.getAsJsonObject("personne");
+                    outputPersonnes.add(personne);
+                }
+
+                client.add("personnes", outputPersonnes);
+
+            }
+            System.out.println("4");
+
+            this.container.add("clients", clientsTrouves);
+
+        } catch (Exception ex) {
+            throw JsonServletHelper.ServiceMetierExecutionException("rechercherClientParNomDePersonne", ex);
         }
     }
 

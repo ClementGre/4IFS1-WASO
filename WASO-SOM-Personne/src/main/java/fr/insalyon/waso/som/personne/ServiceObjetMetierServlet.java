@@ -74,8 +74,12 @@ public class ServiceObjetMetierServlet extends HttpServlet {
                 service.getPersonneById(idPersonne);
 
             } else if ("rechercherPersonneParNom".equals(som)) {
-
-                // service.rechercherPersonneParNom(nomPersonne);
+                System.out.println("rechercherPersonneParNom called");
+                String nomPersonne = request.getParameter("nom");
+                if (nomPersonne == null) {
+                    throw new ServiceException("Paramètres incomplets");
+                }
+                service.rechercherPersonneParNom(nomPersonne);
 
             } else {
 
