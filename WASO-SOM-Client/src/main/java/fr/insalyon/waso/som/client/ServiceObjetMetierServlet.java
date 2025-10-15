@@ -80,6 +80,9 @@ public class ServiceObjetMetierServlet extends HttpServlet {
                 if (ville == null) {
                     ville = "";
                 }
+                if (denomination == null) {
+                    throw new ServletException("Paramètre GET denomination manquant");
+                }
                 service.rechercherClientParDenomination(denomination, ville);
 
             } else if ("rechercherClientParPersonne".equals(som)) {

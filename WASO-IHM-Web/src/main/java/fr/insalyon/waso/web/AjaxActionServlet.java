@@ -67,6 +67,7 @@ public class AjaxActionServlet extends HttpServlet {
                     ajaxAction.getListeClient();
                 }
 
+
             } else {
 
                 actionCalled = false;

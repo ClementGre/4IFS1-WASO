@@ -64,7 +64,7 @@ public class ServiceObjetMetier {
             JsonArray jsonListe = new JsonArray();
 
             List<Object[]> listeClients = this.dBConnection.launchQuery(
-                    "SELECT ClientID, TypeClient, Denomination, Adresse, Ville FROM CLIENT WHERE Denomination LIKE ?  AND Ville LIKE ? ORDER BY ClientID",
+                    "SELECT ClientID, TypeClient, Denomination, Adresse, Ville FROM CLIENT WHERE LOWER(Denomination) LIKE LOWER(?)  AND LOWER(Ville) LIKE LOWER(?) ORDER BY ClientID",
                     "%" + denomination + "%", "%" + ville + "%"
             );
 
