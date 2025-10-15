@@ -38,7 +38,7 @@ public class ServiceMetierServlet extends HttpServlet {
             if (pathInfo != null) {
                 sma = pathInfo.substring(1);
             }
-            
+
             String somParameter = request.getParameter("SMA");
             if (somParameter != null) {
                 sma = somParameter;
@@ -68,15 +68,24 @@ public class ServiceMetierServlet extends HttpServlet {
                     throw new ServiceException("Paramètres incomplets");
                 }
                 Integer numero = Integer.parseInt(numeroParametre);
-                
+
                 // service.rechercherClientParNumero(numero);
 
             } else if ("rechercherClientParDenomination".equals(sma)) {
-                
-                // service.rechercherClientParDenomination(denomination,ville);
+
+                String denomination = request.getParameter("denomination");
+                String ville = request.getParameter("ville");
+                if (denomination == null) {
+                    throw new ServletException("Paramètre GET denomination manquant");
+                }
+                if (ville == null) {
+                    ville = "";
+                }
+
+                service.rechercherClientParDenomination(denomination, ville);
 
             } else if ("rechercherClientParNomPersonne".equals(sma)) {
-                
+
                 // service.rechercherClientParNomPersonne(nomPersonne,ville);
 
             } else {
@@ -85,7 +94,7 @@ public class ServiceMetierServlet extends HttpServlet {
             }
 
             service.release();
-            
+
             if (serviceCalled) {
 
                 JsonServletHelper.printJsonOutput(response, container);
