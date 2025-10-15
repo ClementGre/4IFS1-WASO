@@ -7,7 +7,7 @@
             <param-name>JDBC-Client-URL</param-name>
             <!-- <param-value>jdbc:mysql://localhost:3306/WASO-BD-Client</param-value> -->
             <!-- <param-value>jdbc:mysql://localhost:8889/WASO-BD-Client</param-value> -->
-            <param-value>jdbc:derby://localhost:1527/WASO-BD-Client</param-value>
+            <param-value>jdbc:derby://localhost:1527/WASO-BD-Client;create=true</param-value>
         </init-param>
         <init-param>
             <param-name>JDBC-Client-User</param-name>

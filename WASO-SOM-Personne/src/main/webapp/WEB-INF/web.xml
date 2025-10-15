@@ -7,7 +7,7 @@
             <param-name>JDBC-Personne-URL</param-name>
             <!-- <param-value>jdbc:mysql://localhost:3306/WASO-BD-Personne</param-value> -->
             <!-- <param-value>jdbc:mysql://localhost:8889/WASO-BD-Personne</param-value> -->
-            <param-value>jdbc:derby://localhost:1527/WASO-BD-Personne</param-value>
+            <param-value>jdbc:derby://localhost:1527/WASO-BD-Personne;create=true</param-value>
         </init-param>
         <init-param>
             <param-name>JDBC-Personne-User</param-name>
