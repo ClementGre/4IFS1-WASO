@@ -16,5 +16,23 @@
         <p>
             Test du SOM <code>Personne::getListePersonne():liste&lt;PersonneID,Personne&gt;</code> &rAarr; <a href="./ServiceObjetMetier?SOM=getListePersonne">cliquer ici</a>
         </p>
+        <p>
+            Test du SOM <code>Personne::getPersonneById(PersonneID):liste&lt;PersonneID,Personne&gt;</code> &rAarr;
+            <input type="number" id="personneIdInput" placeholder="PersonneID" style="width: 80px;">
+            <a href="#" id="getPersonneByIdLink">cliquer ici</a>
+        </p>
+        <script>
+            document.getElementById('getPersonneByIdLink').onclick = function(e) {
+                e.preventDefault();
+                const id = document.getElementById('personneIdInput').value;
+                console.log(id);
+                if (id) {
+                    window.location.href = './ServiceObjetMetier?SOM=getPersonneById&PersonneID=' + encodeURIComponent(id);
+                } else {
+                    alert('Veuillez saisir un identifiant.');
+                }
+            };
+        </script>
+
     </body>
 </html>

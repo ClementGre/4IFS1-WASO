@@ -50,4 +50,29 @@ public class ServiceObjetMetier {
         }
     }
 
+    public void getPersonneById(int PersonneID) throws ServiceException {
+        try {
+            List<Object[]> result = this.dBConnection.launchQuery(
+                    "SELECT PersonneID, Nom, Prenom, Mail FROM PERSONNE WHERE PersonneID = ?", PersonneID
+            );
+
+            if (!result.isEmpty()) {
+                Object[] personne = result.get(0);
+                JsonObject jsonItem = new JsonObject();
+                jsonItem.addProperty("id", (Integer) personne[0]);
+                jsonItem.addProperty("nom", (String) personne[1]);
+                jsonItem.addProperty("prenom", (String) personne[2]);
+                jsonItem.addProperty("mail", (String) personne[3]);
+                this.container.add("personne", jsonItem);
+            }
+
+
+        } catch (DBException ex) {
+            throw JsonServletHelper.ServiceObjectMetierExecutionException("Personne", "getPersonneById", ex);
+        }
+
+    }
+
+
+
 }
