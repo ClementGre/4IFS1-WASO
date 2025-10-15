@@ -48,7 +48,7 @@ public class JsonServletHelper {
     }
 
     public static ServiceException ServiceObjectMetierExecutionException(String bloc, String som, Exception ex) {
-        return new ServiceException("Exception in SOM " + bloc + "::" + som, ex);
+        return new ServiceException("Exception in SOM " + bloc + "::" + som + " (" + ex.getMessage() + ")", ex);
     }
 
     public static ServiceException ServiceMetierExecutionException(String sma, String error) {
@@ -66,20 +66,20 @@ public class JsonServletHelper {
     public static ServiceException ActionExecutionException(String action, String error) {
         return new ServiceException("Error in AJAX Action " + action + ": " + error);
     }
-    
+
     public static ServiceException ActionExecutionException(String action, Exception ex) {
         return new ServiceException("Exception in AJAX Action " + action, ex);
     }
-    
+
     public static ServiceException ActionExecutionException(String action, String error, Exception ex) {
         return new ServiceException("Exception in AJAX Action " + action + ": " + error, ex);
     }
 
-    
+
     public static ServiceException ServiceObjectMetierCallException(String url, String bloc, String som) {
         return new ServiceException("Error with call to SOM " + bloc + "::" + som + " [" + url + "]");
     }
-    
+
     public static ServiceException ServiceObjectMetierCallException(String url, String bloc, String som, Exception ex) {
         return new ServiceException("Error with call to SOM " + bloc + "::" + som + " [" + url + "]", ex);
     }

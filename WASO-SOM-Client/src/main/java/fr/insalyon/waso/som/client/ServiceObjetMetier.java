@@ -21,7 +21,7 @@ public class ServiceObjetMetier {
         this.dBConnection = dBConnection;
         this.container = container;
     }
-    
+
     public void release() {
         this.dBConnection.close();
     }
@@ -93,7 +93,43 @@ public class ServiceObjetMetier {
             this.container.add("clients", jsonListe);
 
         } catch (DBException ex) {
-            throw JsonServletHelper.ServiceObjectMetierExecutionException("Client","getListeClient", ex);
+            throw JsonServletHelper.ServiceObjectMetierExecutionException("Client","rechercherClientParDenomination", ex);
+        }
+    }
+    public void rechercherClientParNumero(Integer numero) throws ServiceException {
+        try {
+            JsonArray jsonListe = new JsonArray();
+
+            List<Object[]> listeClients = this.dBConnection.launchQuery(
+                    "SELECT ClientID, TypeClient, Denomination, Adresse, Ville FROM CLIENT WHERE ClientID = ?",
+                    numero
+            );
+
+
+            for (Object[] row : listeClients) {
+                JsonObject jsonItem = new JsonObject();
+                Integer clientId = (Integer) row[0];
+                jsonItem.addProperty("id", clientId);
+                jsonItem.addProperty("type", (String) row[1]);
+                jsonItem.addProperty("denomination", (String) row[2]);
+                jsonItem.addProperty("adresse", (String) row[3]);
+                jsonItem.addProperty("ville", (String) row[4]);
+
+                List<Object[]> listePersonnes = this.dBConnection.launchQuery("SELECT ClientID, PersonneID FROM COMPOSER WHERE ClientID = ? ORDER BY ClientID,PersonneID", clientId);
+                JsonArray jsonSousListe = new JsonArray();
+                for (Object[] innerRow : listePersonnes) {
+                    jsonSousListe.add((Integer) innerRow[1]);
+                }
+
+                jsonItem.add("personnes-ID", jsonSousListe);
+
+                jsonListe.add(jsonItem);
+            }
+
+            this.container.add("clients", jsonListe);
+
+        } catch (DBException ex) {
+            throw JsonServletHelper.ServiceObjectMetierExecutionException("Client", "rechercherClientParNumero", ex);
         }
     }
 

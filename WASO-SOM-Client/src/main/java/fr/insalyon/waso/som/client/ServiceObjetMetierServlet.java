@@ -33,15 +33,15 @@ public class ServiceObjetMetierServlet extends HttpServlet {
         request.setCharacterEncoding(JsonServletHelper.ENCODING_UTF8);
 
         try {
-            
+
             String som = null;
-            
+
             // cf. https://codebox.net/pages/java-servlet-url-parts
             String pathInfo = request.getPathInfo();
             if (pathInfo != null) {
                 som = pathInfo.substring(1);
             }
-            
+
             String somParameter = request.getParameter("SOM");
             if (somParameter != null) {
                 som = somParameter;
@@ -72,7 +72,7 @@ public class ServiceObjetMetierServlet extends HttpServlet {
                 }
                 Integer numero = Integer.parseInt(numeroParametre);
 
-                // service.rechercherClientParNumero(numero);
+                service.rechercherClientParNumero(numero);
 
             } else if ("rechercherClientParDenomination".equals(som)) {
                 String denomination = request.getParameter("denomination");
@@ -101,7 +101,7 @@ public class ServiceObjetMetierServlet extends HttpServlet {
             } else {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Service SOM '" + som + "' not found");
             }
-            
+
             service.release();
 
         } catch (DBException ex) {
